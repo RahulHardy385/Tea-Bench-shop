@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tea Shop Dashboard</title>
+    
+    <!-- jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Moment.js before daterangepicker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    
+    <!-- Bootstrap CSS (required by daterangepicker) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    
+    <!-- DateRangePicker CSS and JS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css" />
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.min.js"></script>
+    
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="dashboard-styles.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-container">
+            <div class="nav-brand">Tea Shop Tracker</div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="analytics.html" class="nav-link">Analytics</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <header>
+            <h1>Tea Shop Dashboard</h1>
+            <div class="header-controls">
+                <div class="date-range-container">
+                    <input type="text" id="dateRange" readonly>
+                    <button onclick="setDateRange('week')">Week</button>
+                    <button onclick="setDateRange('month')">Month</button>
+                    <button onclick="setDateRange('year')">Year</button>
+                </div>
+                <div class="export-controls">
+                    <button onclick="exportToPDF()" class="export-btn pdf">Export PDF</button>
+                    <button onclick="exportToCSV()" class="export-btn csv">Export CSV</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- Summary Cards -->
+            <section class="summary-cards">
+                <div class="card">
+                    <h3>Total Sales</h3>
+                    <div class="amount" id="totalSales">₹0.00</div>
+                </div>
+                <div class="card">
+                    <h3>Total Expenses</h3>
+                    <div class="amount" id="totalExpenses">₹0.00</div>
+                </div>
+                <div class="card">
+                    <h3>Total Credits</h3>
+                    <div class="amount" id="totalCredits">₹0.00</div>
+                    <div class="trend" id="creditsTrend">0 pending payments</div>
+                </div>
+                <div class="card">
+                    <h3>Net Profit</h3>
+                    <div class="amount" id="netProfit">₹0.00</div>
+                </div>
+            </section>
+
+            <!-- Top Items Table -->
+            <section class="top-items-section">
+                <h3>Top Selling Items</h3>
+                <div class="table-container">
+                    <table id="topItemsTable">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Category</th>
+                                <th>Quantity Sold</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="dashboard.js"></script>
+</body>
+</html> 

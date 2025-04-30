@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tea Shop Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .login-btn:hover {
+            background: var(--primary-color);
+        }
+
+        .error-message {
+            color: var(--accent-color);
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Tea Shop Login</h1>
+            <p>Please login to access the dashboard</p>
+        </div>
+        <form id="login-form" class="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+        <div id="error-message" class="error-message"></div>
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner"></i> Logging in...
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+
+    <!-- Initialize Firebase -->
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAdAMZh-CdHySouCgk2NW29NQWavUT3v0w",
+            authDomain: "tea-bench-shop.firebaseapp.com",
+            projectId: "tea-bench-shop",
+            storageBucket: "tea-bench-shop.firebasestorage.app",
+            messagingSenderId: "621097147787",
+            appId: "1:621097147787:web:9f48c18b5244916c08e38e",
+            measurementId: "G-NYZYTBSHL3"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Get form elements
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+        const loading = document.getElementById('loading');
+
+        // Handle login form submission
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Show loading
+                loading.style.display = 'block';
+                errorMessage.style.display = 'none';
+
+                // Sign in with Firebase
+                await firebase.auth().signInWithEmailAndPassword(email, password);
+                
+                // Redirect to main page on successful login
+                window.location.href = 'index.html';
+            } catch (error) {
+                // Show error message
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+                loading.style.display = 'none';
+            }
+        });
+
+        // Check if user is already logged in
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html> 

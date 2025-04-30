@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tea Shop Daily Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>Tea Shop Tracker</h1>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <button data-section="sales-section" class="active">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Sales Entry</span>
+                    </button>
+                </li>
+                <li>
+                    <button data-section="expense-section">
+                        <i class="fas fa-money-bill"></i>
+                        <span>Expense Entry</span>
+                    </button>
+                </li>
+                <li>
+                    <button data-section="credit-section">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Credit Entry</span>
+                    </button>
+                </li>
+                <li>
+                    <button onclick="window.location.href='dashboard.html'">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </button>
+                </li>
+                <li>
+                    <button onclick="logout()" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+
+        <!-- Main Sections -->
+        <main class="container">
+            <!-- Sales Section -->
+            <section id="sales-section" class="content-section active-section">
+                <h2><i class="fas fa-coffee"></i> MILK TEA & COFFEE</h2>
+                <div class="item-grid">
+                    <!-- Sales items will be dynamically generated -->
+                </div>
+                <div class="total-display">
+                    <h3>Grand Total Sales</h3>
+                    <div class="amount">₹<span id="grand-total">0.00</span></div>
+                </div>
+                <div class="button-container">
+                    <button class="btn btn-primary" onclick="submitData()">
+                        <i class="fas fa-save"></i> Submit Sales
+                    </button>
+                    <button class="btn btn-danger" onclick="resetAll()">
+                        <i class="fas fa-redo"></i> Reset Sales
+                    </button>
+                </div>
+            </section>
+
+            <!-- Expense Section -->
+            <section id="expense-section" class="content-section hidden-section">
+                <h2><i class="fas fa-receipt"></i> DAILY EXPENSES</h2>
+                <div class="item-grid expense-grid">
+                    <!-- Expense items will be dynamically generated -->
+                </div>
+                <div class="button-container">
+                    <button class="btn btn-primary" onclick="submitExpenses()">
+                        <i class="fas fa-save"></i> Submit Expenses
+                    </button>
+                    <button class="btn btn-danger" onclick="resetExpenses()">
+                        <i class="fas fa-redo"></i> Reset Expenses
+                    </button>
+                </div>
+            </section>
+
+            <!-- Credit Section -->
+            <section id="credit-section" class="content-section hidden-section">
+                <h2><i class="fas fa-credit-card"></i> CREDIT ENTRY</h2>
+                <div class="credit-container">
+                    <div class="credit-form">
+                        <h3>Add New Credit</h3>
+                        <form id="credit-form" onsubmit="addCreditEntry(event)">
+                            <div class="form-group">
+                                <label for="credit-customer-select">Customer Name</label>
+                                <select id="credit-customer-select" required>
+                                    <option value="">-- Select Customer --</option>
+                                    <option value="KEYPEE">KEYPEE</option>
+                                    <option value="MAHESH">MAHESH</option>
+                                    <option value="VISHAL">VISHAL</option>
+                                    <option value="Ramesh">Ramesh</option>
+                                    <option value="JEWELRY SHOP">JEWELRY SHOP</option>
+                                    <option value="Suresh">Suresh</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="credit-amount">Amount (₹)</label>
+                                <input type="number" id="credit-amount" step="0.01" min="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="credit-notes">Notes (Optional)</label>
+                                <textarea id="credit-notes" rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add Credit
+                            </button>
+                        </form>
+                    </div>
+                    <div class="credit-list">
+                        <h3>Pending Credits</h3>
+                        <ul id="credit-list">
+                            <!-- Credit entries will be dynamically generated -->
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+
+    <!-- Initialize Firebase -->
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAdAMZh-CdHySouCgk2NW29NQWavUT3v0w",
+            authDomain: "tea-bench-shop.firebaseapp.com",
+            projectId: "tea-bench-shop",
+            storageBucket: "tea-bench-shop.firebasestorage.app",
+            messagingSenderId: "621097147787",
+            appId: "1:621097147787:web:9f48c18b5244916c08e38e",
+            measurementId: "G-NYZYTBSHL3"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Make Firebase services globally available
+        window.db = firebase.firestore();
+        window.analytics = firebase.analytics();
+        window.salesCollection = window.db.collection('sales');
+        window.expensesCollection = window.db.collection('expenses');
+        window.creditsCollection = window.db.collection('credits');
+
+        // Check authentication state
+        firebase.auth().onAuthStateChanged((user) => {
+            if (!user) {
+                // Redirect to login page if not authenticated
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Logout function
+        function logout() {
+            firebase.auth().signOut().then(() => {
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                console.error('Error signing out:', error);
+            });
+        }
+    </script>
+
+    <!-- Load Scripts -->
+    <script src="js/navigation.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
