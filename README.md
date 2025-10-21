@@ -148,7 +148,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email RahulHardy279@gmail.com or create an issue in the repository.
+For support, email rahulhardy279@gmail.com or create an issue in the repository.
 
 ---
 Made with ❤️ for tea shop owners 
